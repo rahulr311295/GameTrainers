@@ -4,47 +4,56 @@
 #include <windows.h>
 #include <tchar.h>
 
-
+void cheatMenu();
 
 int main()
 {
+	cheatMenu();
+	return 0;
+	
+}
+
+void cheatMenu() {
+
 	DWORD procID = GetProcId(L"Eschalon Book I.exe"); //get procID of the executable
 
-	uintptr_t moduleBase = GetModuleBaseAddress(procID, L"Eschalon Book I.exe");
+	uintptr_t moduleBase = GetModuleBaseAddress(procID, L"Eschalon Book I.exe");//get baseaddress from executable
 
 	HANDLE hProcess = 0;
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procID);
 
-	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x001D1C38;
-	std::cout << "Module Base Address at= 0x" << std::hex << moduleBase << std::endl;
-	std::cout << "DynmapicPointer Base Address at= 0x" << std::hex << dynamicPtrBaseAddr << std::endl;
+	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x001D1C38;//adding offset to local player entity
+	//std::cout << "|------------------Debug info -------------------------|" << std::endl;
+	//std::cout << "Module Base Address at= 0x" << std::hex << moduleBase << std::endl;
+	//std::cout << "DynmapicPointer Base Address at= 0x" << std::hex << dynamicPtrBaseAddr << std::endl;
 
-	std::vector<unsigned int> attributeOffset = {0x4C};
-	//uintptr_t attributeAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, attributeOffset);
-	//std::cout << "DynmapicPointer Attribute Address at= 0x" << std::hex << attributeAddr << std::endl;
+	std::vector<unsigned int> attributeOffset = { 0x4C };
 	std::vector<unsigned int> skillOffset = { 0x50 };
 	std::vector<unsigned int> playerHealthOffset = { 0x38 };
 	std::vector<unsigned int> playerManaOffset = { 0x3C };
 	std::vector<unsigned int> playerExperienceOffset = { 0x40 };
 	std::vector<unsigned int> playerEncumbaranceOffset = { 0xD0 };
 
+	
 	uintptr_t attributeAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, attributeOffset);
-	std::cout << "DynmapicPointer Attribute Address at= 0x" << std::hex << attributeAddr << std::endl;
+	//std::cout << "DynmapicPointer Attribute Address at= 0x" << std::hex << attributeAddr << std::endl;
 
 	uintptr_t skillAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, skillOffset);
-	std::cout << "DynmapicPointer Skill Address at= 0x" << std::hex << skillAddr << std::endl;
+	//std::cout << "DynmapicPointer Skill Address at= 0x" << std::hex << skillAddr << std::endl;
 
 	uintptr_t playerHealthAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, playerHealthOffset);
-	std::cout << "DynmapicPointer Player Health Address at= 0x" << std::hex << playerHealthAddr << std::endl;
+	//std::cout << "DynmapicPointer Player Health Address at= 0x" << std::hex << playerHealthAddr << std::endl;
 
 	uintptr_t playerManaAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, playerManaOffset);
-	std::cout << "DynmapicPointer Player Mana Address at= 0x" << std::hex << playerManaAddr << std::endl;
-	
+	//std::cout << "DynmapicPointer Player Mana Address at= 0x" << std::hex << playerManaAddr << std::endl;
+
 	uintptr_t playerExperienceAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, playerExperienceOffset);
-	std::cout << "DynmapicPointer Player Exp Address at= 0x" << std::hex << playerExperienceAddr << std::endl;
+	//std::cout << "DynmapicPointer Player Exp Address at= 0x" << std::hex << playerExperienceAddr << std::endl;
 
 	uintptr_t playerEncumbaranceAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, playerEncumbaranceOffset);
-	std::cout << "DynmapicPointer Encumbarance Address at= 0x" << std::hex << playerEncumbaranceAddr << std::endl;
+	//std::cout << "DynmapicPointer Encumbarance Address at= 0x" << std::hex << playerEncumbaranceAddr << std::endl;
+
+	//std::cout << "|--------------------------------------------------------|" << std::endl;
 
 	int attributeValue = 0;
 	int skillValue = 0;
@@ -59,7 +68,12 @@ int main()
 	int newplayerExperienceValue = 0;
 	float newplayerEncumbaranceValue = 0.0;
 
-	std::cout << "Eschalon:Book I Trainer" << std::endl;
+	std::cout << R"(                                                                 
+ _____         _       _         _    _____         _      ___   
+|   __|___ ___| |_ ___| |___ ___|_|  | __  |___ ___| |_   |_  |  
+|   __|_ -|  _|   | .'| | . |   |_   | __ -| . | . | '_|   _| |_ 
+|_____|___|___|_|_|__,|_|___|_|_|_|  |_____|___|___|_,_|  |_____|                                                                 
+ Trainer by jamoski)" << std::endl;
 	std::cout << "---------\n";
 	std::cout << "|OPTIONS|\n";
 	std::cout << "---------\n";
@@ -91,70 +105,109 @@ int main()
 		}
 	}
 
-		switch (option) {
+	switch (option) {
 
-		case 1:
-			ReadProcessMemory(hProcess, (BYTE*)attributeAddr, &attributeValue, sizeof(attributeValue), nullptr);
-			std::cout << "Current Attribute Value= " << std::dec << attributeValue << std::endl;
-			break;
-		case 2:
-			ReadProcessMemory(hProcess, (BYTE*)skillAddr, &skillValue, sizeof(skillValue), nullptr);
-			std::cout << "Current Skill Value= " << std::dec << skillValue << std::endl;
-			break;
-		case 3:
-			ReadProcessMemory(hProcess, (BYTE*)playerHealthAddr, &playerHealthValue, sizeof(playerHealthValue), nullptr);
-			std::cout << "Current Player Health Value= " << std::dec << playerHealthValue << std::endl;
-			system("pause");
-			break;
-		case 4:
-			ReadProcessMemory(hProcess, (BYTE*)playerManaAddr, &playerManaValue, sizeof(playerManaValue), nullptr);
-			std::cout << "Current Player Mana Value= " << std::dec << playerManaValue << std::endl;
-		case 5:
-			ReadProcessMemory(hProcess, (BYTE*)playerExperienceAddr, &playerExperienceValue, sizeof(playerExperienceValue), nullptr);
-			std::cout << "Current Player Experience Value= " << std::dec << playerExperienceValue << std::endl;
-		case 6:
-			ReadProcessMemory(hProcess, (BYTE*)playerEncumbaranceAddr, &playerEncumbaranceValue, sizeof(playerEncumbaranceValue), nullptr);
-			std::cout << "Current Player Encumbarance Value= " << std::dec << playerEncumbaranceValue << std::endl;
-			break;
-		case 7:
-			std::cout << "Enter New Attribute Value :" << std::endl;
-			std::cin >> newattributeValue;
-			WriteProcessMemory(hProcess, (BYTE*)attributeAddr, &newattributeValue, sizeof(newattributeValue), nullptr);
-			std::cout << "New Attribute Value= " << std::dec << newattributeValue << std::endl;
-			break;
-		case 8:
-			std::cout << "Enter New Skill Value :" << std::endl;
-			std::cin >> newskillValue;
-			WriteProcessMemory(hProcess, (BYTE*)skillAddr, &newskillValue, sizeof(newskillValue), nullptr);
-			std::cout << "New Skill Value= " << std::dec << newskillValue << std::endl;
-			break;
-		case 9:
-			std::cout << "Enter Player Health Value :" << std::endl;
-			std::cin >> newplayerHealthValue;
-			WriteProcessMemory(hProcess, (BYTE*)playerHealthAddr, &newplayerHealthValue, sizeof(newplayerHealthValue), nullptr);
-			std::cout << "New Player Health Value= " << std::dec << newplayerHealthValue << std::endl;
-			break;
-		case 10:
-			std::cout << "Enter Player Mana Value :" << std::endl;
-			std::cin >> newplayerManaValue;
-			WriteProcessMemory(hProcess, (BYTE*)playerManaAddr, &newplayerManaValue, sizeof(newplayerManaValue), nullptr);
-			std::cout << "New Player Mana Value= " << std::dec << newplayerManaValue << std::endl;
-			break;
-		case 11:
-			std::cout << "Enter Player Experience Value :" << std::endl;
-			std::cin >> newplayerExperienceValue;
-			WriteProcessMemory(hProcess, (BYTE*)playerExperienceAddr, &newplayerExperienceValue, sizeof(newplayerExperienceValue), nullptr);
-			std::cout << "New Player Experience Value= " << std::dec << newplayerExperienceValue << std::endl;
-			break;
-		case 12:
-			std::cout << "Enter Player Encumbarance Value :" << std::endl;
-			std::cin >> newplayerEncumbaranceValue;
-			WriteProcessMemory(hProcess, (BYTE*)playerEncumbaranceAddr, &newplayerEncumbaranceValue, sizeof(newplayerEncumbaranceValue), nullptr);
-			std::cout << "New Player Encumbarance Value= " << std::dec << newplayerEncumbaranceValue << std::endl;
-			break;
-		default:
-			main();
-		}
+	case 1:
+		ReadProcessMemory(hProcess, (BYTE*)attributeAddr, &attributeValue, sizeof(attributeValue), nullptr);
+		std::cout << "Current Attribute Value= " << std::dec << attributeValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		
+		break;
+	case 2:
+		ReadProcessMemory(hProcess, (BYTE*)skillAddr, &skillValue, sizeof(skillValue), nullptr);
+		std::cout << "Current Skill Value= " << std::dec << skillValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 3:
+		ReadProcessMemory(hProcess, (BYTE*)playerHealthAddr, &playerHealthValue, sizeof(playerHealthValue), nullptr);
+		std::cout << "Current Player Health Value= " << std::dec << playerHealthValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 4:
+		ReadProcessMemory(hProcess, (BYTE*)playerManaAddr, &playerManaValue, sizeof(playerManaValue), nullptr);
+		std::cout << "Current Player Mana Value= " << std::dec << playerManaValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu(); 
+		break;
+	case 5:
+		ReadProcessMemory(hProcess, (BYTE*)playerExperienceAddr, &playerExperienceValue, sizeof(playerExperienceValue), nullptr);
+		std::cout << "Current Player Experience Value= " << std::dec << playerExperienceValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 6:
+		ReadProcessMemory(hProcess, (BYTE*)playerEncumbaranceAddr, &playerEncumbaranceValue, sizeof(playerEncumbaranceValue), nullptr);
+		std::cout << "Current Player Encumbarance Value= " << std::dec << playerEncumbaranceValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 7:
+		std::cout << "Enter New Attribute Value :" << std::endl;
+		std::cin >> newattributeValue;
+		WriteProcessMemory(hProcess, (BYTE*)attributeAddr, &newattributeValue, sizeof(newattributeValue), nullptr);
+		std::cout << "New Attribute Value= " << std::dec << newattributeValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 8:
+		std::cout << "Enter New Skill Value :" << std::endl;
+		std::cin >> newskillValue;
+		WriteProcessMemory(hProcess, (BYTE*)skillAddr, &newskillValue, sizeof(newskillValue), nullptr);
+		std::cout << "New Skill Value= " << std::dec << newskillValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 9:
+		std::cout << "Enter Player Health Value :" << std::endl;
+		std::cin >> newplayerHealthValue;
+		WriteProcessMemory(hProcess, (BYTE*)playerHealthAddr, &newplayerHealthValue, sizeof(newplayerHealthValue), nullptr);
+		std::cout << "New Player Health Value= " << std::dec << newplayerHealthValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 10:
+		std::cout << "Enter Player Mana Value :" << std::endl;
+		std::cin >> newplayerManaValue;
+		WriteProcessMemory(hProcess, (BYTE*)playerManaAddr, &newplayerManaValue, sizeof(newplayerManaValue), nullptr);
+		std::cout << "New Player Mana Value= " << std::dec << newplayerManaValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 11:
+		std::cout << "Enter Player Experience Value :" << std::endl;
+		std::cin >> newplayerExperienceValue;
+		WriteProcessMemory(hProcess, (BYTE*)playerExperienceAddr, &newplayerExperienceValue, sizeof(newplayerExperienceValue), nullptr);
+		std::cout << "New Player Experience Value= " << std::dec << newplayerExperienceValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	case 12:
+		std::cout << "Enter Player Encumbarance Value :" << std::endl;
+		std::cin >> newplayerEncumbaranceValue;
+		WriteProcessMemory(hProcess, (BYTE*)playerEncumbaranceAddr, &newplayerEncumbaranceValue, sizeof(newplayerEncumbaranceValue), nullptr);
+		std::cout << "New Player Encumbarance Value= " << std::dec << newplayerEncumbaranceValue << std::endl << std::endl;
+		system("pause");
+		system("CLS");
+		cheatMenu();
+		break;
+	default:
+		cheatMenu();
+		break;
+	}
+
 
 }
-
