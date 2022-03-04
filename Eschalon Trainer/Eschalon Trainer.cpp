@@ -152,8 +152,6 @@ int main()
 			WriteProcessMemory(hProcess, (BYTE*)playerEncumbaranceAddr, &newplayerEncumbaranceValue, sizeof(newplayerEncumbaranceValue), nullptr);
 			std::cout << "New Player Encumbarance Value= " << std::dec << newplayerEncumbaranceValue << std::endl;
 			break;
-		default:
-			main();
 		}
 
 }
