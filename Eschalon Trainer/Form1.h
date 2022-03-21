@@ -515,9 +515,12 @@ namespace EschalonTrainerGUI {
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"Form1";
-			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+			this->StartPosition = System::Windows::Forms::FormStartPosition::Manual;
 			this->Text = L"Eschalon Book I Trainer";
 			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
+			this->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::Form1_MouseDown);
+			this->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::Form1_MouseMove);
+			this->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::Form1_MouseUp);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -682,6 +685,26 @@ private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e
 	MessageBox::Show("Encumbarance Value changed to " + newplayerEncumbaranceValue, "Success", MessageBoxButtons::OK, MessageBoxIcon::Exclamation);
 	ReadProcessMemory(hProcess, (BYTE*)playerEncumbaranceAddr, &newplayerEncumbaranceValue, sizeof(newplayerEncumbaranceValue), nullptr);
 	textBox6->Text = System::Convert::ToString(newplayerEncumbaranceValue);
+}
+	   bool dragging;
+	   Point offset; //X,Y coordinates
+private: System::Void Form1_MouseDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+	//Enable dragging and get mouse position
+	dragging = true;
+	offset.X = e->X;
+	offset.Y = e->Y;
+
+
+}
+private: System::Void Form1_MouseMove(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+
+	if (dragging) {
+		Point currentScreenPosition = PointToScreen(Point(e -> X, e->Y));
+		Location = Point(currentScreenPosition.X - offset.X, currentScreenPosition.Y - offset.Y);
+	}
+}
+private: System::Void Form1_MouseUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+	dragging = false;
 }
 };
 }
