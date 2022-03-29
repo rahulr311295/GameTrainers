@@ -667,7 +667,7 @@ private: System::Void button5_Click(System::Object^ sender, System::EventArgs^ e
 	uintptr_t playerExperienceAddr = FindDymanicMemoryAddress(hProcess, dynamicPtrBaseAddr, playerExperienceOffset);
 	int newplayerExperienceValue = System::Convert::ToInt16(textBox5->Text);
 	WriteProcessMemory(hProcess, (BYTE*)playerExperienceAddr, &newplayerExperienceValue, sizeof(newplayerExperienceValue), nullptr);
-	MessageBox::Show("Mana Value changed to " + newplayerExperienceValue, "Success", MessageBoxButtons::OK, MessageBoxIcon::Exclamation);
+	MessageBox::Show("Experience Value changed to " + newplayerExperienceValue, "Success", MessageBoxButtons::OK, MessageBoxIcon::Exclamation);
 	ReadProcessMemory(hProcess, (BYTE*)playerExperienceAddr, &newplayerExperienceValue, sizeof(newplayerExperienceValue), nullptr);
 	textBox5->Text = System::Convert::ToString(newplayerExperienceValue);
 }
